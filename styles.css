@@ -926,7 +926,9 @@ ul {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 .steps-grid li {
   min-height: 208px;
