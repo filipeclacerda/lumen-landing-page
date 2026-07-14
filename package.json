@@ -1,0 +1,19 @@
+{
+  "name": "lumen-landing-page",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "format:check": "prettier --check .",
+    "lint:html": "html-validate index.html",
+    "lint:css": "stylelint styles.css",
+    "lint:js": "eslint script.js",
+    "check": "npm run format:check && npm run lint:html && npm run lint:css && npm run lint:js"
+  },
+  "devDependencies": {
+    "eslint": "^10.7.0",
+    "html-validate": "^11.5.6",
+    "prettier": "^3.9.5",
+    "stylelint": "^17.14.0"
+  }
+}
