@@ -1,94 +1,102 @@
-const root = document.documentElement;
-const themeToggle = document.getElementById("theme-toggle");
-const menuToggle = document.getElementById("menu-toggle");
-const mobileNav = document.getElementById("mobile-nav");
+const header = document.querySelector("[data-header]");
+const nav = document.querySelector("[data-nav]");
+const menuButton = document.querySelector("[data-menu-button]");
 
-function setTheme(theme) {
-  root.dataset.theme = theme;
-  const nextLabel =
-    theme === "dark" ? "Ativar tema claro" : "Ativar tema escuro";
-  themeToggle?.setAttribute("aria-label", nextLabel);
-  themeToggle?.setAttribute("aria-pressed", String(theme === "dark"));
-
-  try {
-    localStorage.setItem("lumen-theme", theme);
-  } catch {
-    // O tema continua funcional em contextos que bloqueiam armazenamento local.
+function closeMenu({ restoreFocus = false } = {}) {
+  if (!(nav instanceof HTMLElement) || !(menuButton instanceof HTMLElement)) {
+    return;
   }
+
+  nav.classList.remove("open");
+  menuButton.setAttribute("aria-expanded", "false");
+  menuButton.setAttribute("aria-label", "Abrir menu");
+  document.body.classList.remove("menu-open");
+
+  if (restoreFocus) menuButton.focus();
 }
 
-themeToggle?.addEventListener("click", () => {
-  setTheme(root.dataset.theme === "dark" ? "light" : "dark");
+menuButton?.addEventListener("click", () => {
+  if (!(nav instanceof HTMLElement)) return;
+
+  const opening = !nav.classList.contains("open");
+  nav.classList.toggle("open", opening);
+  menuButton.setAttribute("aria-expanded", String(opening));
+  menuButton.setAttribute("aria-label", opening ? "Fechar menu" : "Abrir menu");
+  document.body.classList.toggle("menu-open", opening);
 });
 
-function closeMenu() {
-  if (!mobileNav || !menuToggle) return;
-  mobileNav.hidden = true;
-  menuToggle.setAttribute("aria-expanded", "false");
-  menuToggle.setAttribute("aria-label", "Abrir navegação");
-}
-
-menuToggle?.addEventListener("click", () => {
-  if (!mobileNav) return;
-  const opening = mobileNav.hidden;
-  mobileNav.hidden = !opening;
-  menuToggle.setAttribute("aria-expanded", String(opening));
-  menuToggle.setAttribute(
-    "aria-label",
-    opening ? "Fechar navegação" : "Abrir navegação",
-  );
+nav?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => closeMenu());
 });
-
-mobileNav
-  ?.querySelectorAll("a")
-  .forEach((link) => link.addEventListener("click", closeMenu));
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && mobileNav && !mobileNav.hidden) {
-    closeMenu();
-    menuToggle?.focus();
+  if (event.key === "Escape" && nav?.classList.contains("open")) {
+    closeMenu({ restoreFocus: true });
   }
 });
 
-// O layout interno do mockup tem 1060px fixos e é reduzido para caber no container.
-const MOCK_WIDTH = 1060;
-const viewport = document.querySelector(".mock-viewport");
-const frame = document.querySelector(".mock-scale");
+const updateHeader = () => {
+  header?.classList.toggle("scrolled", window.scrollY > 18);
+};
 
-function fitMockup() {
-  if (!(viewport instanceof HTMLElement) || !(frame instanceof HTMLElement))
-    return;
-  const scale = Math.min(1, viewport.clientWidth / MOCK_WIDTH);
-  frame.style.transform = `scale(${scale})`;
-  viewport.style.height = `${frame.offsetHeight * scale}px`;
-}
-
-if (viewport instanceof HTMLElement) {
-  if ("ResizeObserver" in window) {
-    new ResizeObserver(fitMockup).observe(viewport);
-  } else {
-    window.addEventListener("resize", fitMockup, { passive: true });
-  }
-  fitMockup();
-}
+window.addEventListener("scroll", updateHeader, { passive: true });
+updateHeader();
 
 const revealElements = document.querySelectorAll(".reveal");
-if (
-  "IntersectionObserver" in window &&
-  !matchMedia("(prefers-reduced-motion: reduce)").matches
-) {
-  const observer = new IntersectionObserver(
+const reducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+).matches;
+
+if ("IntersectionObserver" in window && !reducedMotion) {
+  const revealObserver = new IntersectionObserver(
     (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      }
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      });
     },
-    { threshold: 0.12 },
+    { threshold: 0.1, rootMargin: "0px 0px -5%" },
   );
-  revealElements.forEach((element) => observer.observe(element));
+
+  revealElements.forEach((element) => revealObserver.observe(element));
 } else {
   revealElements.forEach((element) => element.classList.add("visible"));
 }
+
+const sections = [...document.querySelectorAll("main section[id]")];
+const navLinks = [...(nav?.querySelectorAll("a[href^='#']") ?? [])];
+
+if ("IntersectionObserver" in window && sections.length > 0) {
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visible) return;
+      navLinks.forEach((link) => {
+        link.classList.toggle(
+          "active",
+          link.getAttribute("href") === `#${visible.target.id}`,
+        );
+      });
+    },
+    { rootMargin: "-25% 0px -60%", threshold: [0.05, 0.25, 0.5] },
+  );
+
+  sections.forEach((section) => sectionObserver.observe(section));
+}
+
+document.querySelectorAll(".faq-list details").forEach((details) => {
+  details.addEventListener("toggle", () => {
+    if (!details.open) return;
+    document.querySelectorAll(".faq-list details[open]").forEach((other) => {
+      if (other !== details) other.open = false;
+    });
+  });
+});
+
+document.querySelectorAll("[data-year]").forEach((element) => {
+  element.textContent = String(new Date().getFullYear());
+});
