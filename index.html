@@ -36,7 +36,7 @@
     <meta name="twitter:title" content="Lumen — Seu dinheiro, mais claro." />
     <meta
       name="twitter:description"
-      content="Gestor financeiro pessoal, privado e local-first para Windows."
+      content="Gestor financeiro pessoal, privado e local-first para Windows, macOS e Linux."
     />
     <meta
       name="twitter:image"
@@ -50,7 +50,7 @@
         "@type": "SoftwareApplication",
         "name": "Lumen",
         "applicationCategory": "FinanceApplication",
-        "operatingSystem": "Windows",
+        "operatingSystem": "Windows, macOS, Linux",
         "inLanguage": "pt-BR",
         "isAccessibleForFree": true,
         "license": "https://github.com/filipeclacerda/lumen/blob/main/LICENSE",
@@ -86,6 +86,28 @@
         <symbol id="i-download" viewBox="0 0 24 24">
           <path
             d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+          />
+        </symbol>
+        <symbol id="i-windows" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M2.5 4.2 10.6 3v8.3H2.5V4.2Zm9.2-1.4L21.5 1.4v9.9h-9.8V2.8ZM2.5 12.5h8.1v8.3l-8.1-1.1v-7.2Zm9.2 0h9.8v9.9L11.7 21v-8.5Z"
+          />
+        </symbol>
+        <symbol id="i-apple" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M18.6 12.7c0-3.1 2.6-4.6 2.7-4.7a5.8 5.8 0 0 0-4.5-2.4c-1.9-.2-3.7 1.1-4.7 1.1-1 0-2.5-1.1-4.1-1.1A6.1 6.1 0 0 0 2.8 8.7c-2.2 3.8-.6 9.5 1.6 12.6 1.1 1.5 2.3 3.1 4 3 1.6-.1 2.2-1 4.1-1s2.4 1 4.1 1c1.7 0 2.8-1.5 3.8-3 1.2-1.8 1.7-3.5 1.8-3.6-.1 0-3.6-1.4-3.6-5Zm-3-9.1A5.4 5.4 0 0 0 16.9-.3a5.5 5.5 0 0 0-3.7 1.9 5.1 5.1 0 0 0-1.3 3.8 4.6 4.6 0 0 0 3.7-1.8Z"
+            transform="translate(0 1) scale(.92)"
+          />
+        </symbol>
+        <symbol id="i-linux" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            stroke="none"
+            d="M12 1.5c-2.3 0-3.8 2-3.8 4.7 0 1.4.4 2.5.1 3.4-.4 1.1-1.7 2-2.4 3.4-.8 1.5-1.2 3.4-.5 4.1.4.4 1 .4 1.7.1-.1.8.1 1.5.7 1.9.7.5 1.8.3 2.7-.4.5.5 1 .7 1.5.7s1-.2 1.5-.7c.9.7 2 1 2.7.4.6-.4.8-1.1.7-1.9.7.3 1.3.3 1.7-.1.7-.7.3-2.6-.5-4.1-.7-1.4-2-2.3-2.4-3.4-.3-.9.1-2 .1-3.4 0-2.7-1.5-4.7-3.8-4.7Zm-1.6 4.2c.5 0 .8.5.8 1.1s-.3 1.1-.8 1.1-.8-.5-.8-1.1.3-1.1.8-1.1Zm3.2 0c.5 0 .8.5.8 1.1s-.3 1.1-.8 1.1-.8-.5-.8-1.1.3-1.1.8-1.1ZM12 8c.7 0 1.3.4 1.3.9s-.6 1-1.3 1-1.3-.5-1.3-1S11.3 8 12 8Zm-2.8 5.1c.6.7 1.7 1.1 2.8 1.1s2.2-.4 2.8-1.1c.9 1 1.3 2.5 1.1 3.8-.8-.2-1.7-.7-2.4-1.2-.5-.4-1-.6-1.5-.6s-1 .2-1.5.6c-.7.5-1.6 1-2.4 1.2-.2-1.3.2-2.8 1.1-3.8Z"
           />
         </symbol>
         <symbol id="i-menu" viewBox="0 0 24 24">
@@ -180,11 +202,14 @@
             <svg><use href="#i-github"></use></svg>
           </a>
           <a
-            class="button button-primary button-small desktop-only"
+            class="button button-primary button-small desktop-only header-download"
             href="https://github.com/filipeclacerda/lumen/releases/latest"
+            data-smart-download
           >
-            Baixar para Windows
-            <svg><use href="#i-download"></use></svg>
+            <svg aria-hidden="true">
+              <use href="#i-download" data-smart-download-icon></use>
+            </svg>
+            <span data-smart-download-label>Baixar o Lumen</span>
           </a>
           <button
             class="icon-button menu-button"
@@ -218,13 +243,25 @@
             para servidores de terceiros.
           </p>
           <div class="hero-actions reveal reveal-delay-three">
-            <a
-              class="button button-primary"
-              href="https://github.com/filipeclacerda/lumen/releases/latest"
-            >
-              <svg><use href="#i-download"></use></svg>
-              Baixar gratuitamente
-            </a>
+            <div class="hero-download-stack">
+              <a
+                class="button button-primary hero-download"
+                href="https://github.com/filipeclacerda/lumen/releases/latest"
+                data-smart-download
+              >
+                <svg class="hero-download__system" aria-hidden="true">
+                  <use href="#i-download" data-smart-download-icon></use>
+                </svg>
+                <span data-smart-download-label>Baixar o Lumen</span>
+                <svg class="hero-download__action" aria-hidden="true">
+                  <use href="#i-download"></use>
+                </svg>
+              </a>
+              <a class="hero-other-versions" href="#download">
+                Mostrar outras versões
+                <svg aria-hidden="true"><use href="#i-arrow"></use></svg>
+              </a>
+            </div>
             <a
               class="button button-ghost"
               href="https://github.com/filipeclacerda/lumen"
@@ -237,7 +274,7 @@
             class="hero-trust reveal reveal-delay-three"
             aria-label="Destaques"
           >
-            <li><span></span>Windows 10 e 11</li>
+            <li><span></span>Windows, macOS e Linux</li>
             <li><span></span>Gratuito e open source</li>
             <li><span></span>Dados no seu computador</li>
           </ul>
@@ -247,16 +284,18 @@
           <div class="stage-glow" aria-hidden="true"></div>
           <div class="app-window">
             <div class="window-bar">
-              <div class="window-brand">
-                <img src="logo.svg" alt="" width="18" height="18" />
-                <span>Lumen</span>
+              <div class="mac-traffic-lights" aria-hidden="true">
+                <span class="mac-close"></span>
+                <span class="mac-minimize"></span>
+                <span class="mac-maximize"></span>
+                <b>‹</b><b>›</b>
               </div>
               <div class="window-command">
-                <kbd>Ctrl</kbd><kbd>K</kbd> Buscar
+                <kbd>Ctrl K</kbd>
+                <svg aria-hidden="true"><use href="#i-search"></use></svg>
+                Buscar
               </div>
-              <div class="window-controls" aria-hidden="true">
-                <span>—</span><span>□</span><span>×</span>
-              </div>
+              <div aria-hidden="true"></div>
             </div>
             <div class="app-shell">
               <aside class="app-sidebar">
@@ -272,42 +311,49 @@
                   <b aria-hidden="true">‹</b>
                 </div>
                 <div class="app-nav">
+                  <small>ACOMPANHAR</small>
                   <span class="active"
                     ><svg><use href="#i-chart"></use></svg>Visão geral</span
                   >
                   <span
+                    ><svg><use href="#i-chart"></use></svg>Relatórios</span
+                  >
+                  <small>GERENCIAR</small>
+                  <span
                     ><svg><use href="#i-wallet"></use></svg>Transações</span
-                  >
-                  <span
-                    ><svg><use href="#i-repeat"></use></svg>Recorrências</span
-                  >
-                  <span
-                    ><svg><use href="#i-wallet"></use></svg>Orçamento</span
-                  >
-                  <span
-                    ><svg><use href="#i-file"></use></svg>Importar</span
                   >
                   <span
                     ><svg><use href="#i-card"></use></svg>Contas e cartões</span
                   >
                   <span
+                    ><svg><use href="#i-repeat"></use></svg>Recorrências</span
+                  >
+                  <span
+                    ><svg><use href="#i-file"></use></svg>Importar</span
+                  >
+                  <small>PLANEJAR</small>
+                  <span
+                    ><svg><use href="#i-wallet"></use></svg>Orçamento</span
+                  >
+                  <span
                     ><svg><use href="#i-file"></use></svg>Categorias e
                     regras</span
                   >
-                  <span
-                    ><svg><use href="#i-chart"></use></svg>Relatórios</span
-                  >
-                  <span
-                    ><svg><use href="#i-shield"></use></svg>Configurações</span
-                  >
                 </div>
                 <div class="sidebar-footer">
+                  <span class="sidebar-action"
+                    ><svg><use href="#i-shield"></use></svg>Configurações</span
+                  >
+                  <span class="sidebar-action"
+                    ><b aria-hidden="true">☼</b>Tema claro</span
+                  >
                   <div class="sidebar-status">
                     <svg><use href="#i-database"></use></svg>
                     <div>
-                      <strong>Seus dados ficam neste computador</strong>
+                      <strong>Dados salvos localmente</strong>
                     </div>
                   </div>
+                  <small>Lumen v0.7.0</small>
                 </div>
               </aside>
               <div class="app-main">
@@ -321,8 +367,8 @@
                 </div>
                 <div class="dashboard-greeting">
                   <div>
-                    <h2>Visão do mês</h2>
-                    <p>Um resumo simples das suas finanças.</p>
+                    <h2>Olá <span aria-hidden="true">👋</span></h2>
+                    <p>Aqui está o retrato do seu mês.</p>
                   </div>
                   <span>Dados ilustrativos</span>
                 </div>
@@ -333,7 +379,9 @@
                       <span class="metric-symbol metric-income">↗</span>
                     </div>
                     <strong>R$ 7.200,00</strong
-                    ><small class="positive-copy">receitas do período</small>
+                    ><small class="positive-copy"
+                      >120% da renda mensal de R$ 6.000,00</small
+                    >
                   </article>
                   <article>
                     <div>
@@ -341,7 +389,14 @@
                       <span class="metric-symbol metric-expense">↘</span>
                     </div>
                     <strong>R$ 3.150,00</strong
-                    ><small>despesas do período</small>
+                    ><small>gastos confirmados</small>
+                  </article>
+                  <article>
+                    <div>
+                      INVESTIMENTOS
+                      <span class="metric-symbol metric-investment">↗</span>
+                    </div>
+                    <strong>R$ 1.200,00</strong><small>dinheiro guardado</small>
                   </article>
                   <article class="metric-featured">
                     <div>
@@ -350,6 +405,32 @@
                     </div>
                     <strong>R$ 4.050,00</strong
                     ><small>receitas menos despesas</small>
+                  </article>
+                </div>
+                <div class="insight-grid">
+                  <article>
+                    <div>
+                      TAXA DE POUPANÇA
+                      <span class="insight-symbol savings">◉</span>
+                    </div>
+                    <strong>56,3%</strong>
+                    <small>da renda ficou guardada em julho de 2026</small>
+                  </article>
+                  <article>
+                    <div>
+                      RITMO DIÁRIO DE GASTOS
+                      <span class="insight-symbol pace">⌒</span>
+                    </div>
+                    <strong>R$ 101,61</strong>
+                    <small>média por dia neste mês</small>
+                  </article>
+                  <article>
+                    <div>
+                      PROJEÇÃO DO MÊS
+                      <span class="insight-symbol projection">◫</span>
+                    </div>
+                    <strong>R$ 3.150,00</strong>
+                    <small>se o ritmo de gastos se mantiver</small>
                   </article>
                 </div>
                 <div class="dashboard-grid dashboard-real-grid">
@@ -753,40 +834,142 @@
         </div>
       </section>
 
-      <section class="free-section section container">
-        <div class="free-watermark" aria-hidden="true">LIVRE</div>
-        <div class="free-card glass reveal">
-          <div class="free-tier">
-            <small>LUMEN PARA WINDOWS</small><strong>Gratuito.</strong
-            ><span>Sem assinatura.</span>
+      <section class="download-section section container" id="download">
+        <div class="download-watermark" aria-hidden="true">DOWNLOAD</div>
+        <div class="download-heading reveal">
+          <div>
+            <div class="eyebrow"><span></span>Gratuito e open source</div>
+            <h2>Escolha seu sistema.<br /><span>O controle é seu.</span></h2>
           </div>
           <p>
-            O aplicativo principal é open source e pode ser usado sem conta
-            obrigatória. Baixe, mantenha seus dados com você e ajude o projeto a
-            evoluir.
+            Instale o Lumen no seu computador. Sem assinatura, sem conta
+            obrigatória e com seus dados financeiros armazenados localmente.
           </p>
-          <ul>
-            <li>
-              <svg><use href="#i-check"></use></svg>Contas, transações e cartões
-            </li>
-            <li>
-              <svg><use href="#i-check"></use></svg>Importação e categorização
-              local
-            </li>
-            <li>
-              <svg><use href="#i-check"></use></svg>Orçamento e relatórios
-            </li>
-            <li>
-              <svg><use href="#i-check"></use></svg>Backup, exportação e
-              restauração
-            </li>
-          </ul>
-          <a
-            class="button button-primary"
-            href="https://github.com/filipeclacerda/lumen/releases/latest"
-            ><svg><use href="#i-download"></use></svg>Baixar versão mais
-            recente</a
+        </div>
+
+        <div class="platform-grid">
+          <article class="platform-card reveal" data-platform-card="windows">
+            <div class="platform-card__topline">
+              <span
+                class="platform-icon platform-icon--windows"
+                aria-hidden="true"
+              >
+                <svg><use href="#i-windows"></use></svg>
+              </span>
+              <span class="platform-recommended" hidden>Seu sistema</span>
+            </div>
+            <div class="platform-card__copy">
+              <h3>Windows</h3>
+              <p>Windows 10 e 11 <span aria-hidden="true">·</span> x64</p>
+            </div>
+            <a
+              class="platform-button"
+              href="https://github.com/filipeclacerda/lumen/releases/latest"
+              data-download="windows-exe"
+            >
+              <span>
+                <small>Instalador recomendado</small>
+                <strong>Baixar para Windows</strong>
+              </span>
+              <span class="platform-button__format">.exe</span>
+              <svg><use href="#i-download"></use></svg>
+            </a>
+            <p class="platform-alternative">
+              Prefere outro formato?
+              <a
+                href="https://github.com/filipeclacerda/lumen/releases/latest"
+                data-download="windows-msi"
+                >Baixar .msi</a
+              >
+            </p>
+          </article>
+
+          <article
+            class="platform-card reveal reveal-delay-one"
+            data-platform-card="mac"
           >
+            <div class="platform-card__topline">
+              <span class="platform-icon platform-icon--mac" aria-hidden="true">
+                <svg><use href="#i-apple"></use></svg>
+              </span>
+              <span class="platform-recommended" hidden>Seu sistema</span>
+            </div>
+            <div class="platform-card__copy">
+              <h3>macOS</h3>
+              <p>Apple Silicon e Intel</p>
+            </div>
+            <a
+              class="platform-button"
+              href="https://github.com/filipeclacerda/lumen/releases/latest"
+              data-download="mac-arm64"
+            >
+              <span>
+                <small>Apple Silicon</small>
+                <strong>Baixar para macOS</strong>
+              </span>
+              <span class="platform-button__format">.dmg</span>
+              <svg><use href="#i-download"></use></svg>
+            </a>
+            <p class="platform-alternative">
+              Mac com processador Intel?
+              <a
+                href="https://github.com/filipeclacerda/lumen/releases/latest"
+                data-download="mac-x64"
+                >Baixar para Intel</a
+              >
+            </p>
+          </article>
+
+          <article
+            class="platform-card reveal reveal-delay-two"
+            data-platform-card="linux"
+          >
+            <div class="platform-card__topline">
+              <span
+                class="platform-icon platform-icon--linux"
+                aria-hidden="true"
+              >
+                <svg><use href="#i-linux"></use></svg>
+              </span>
+              <span class="platform-recommended" hidden>Seu sistema</span>
+            </div>
+            <div class="platform-card__copy">
+              <h3>Linux</h3>
+              <p>Distribuições 64 bits</p>
+            </div>
+            <a
+              class="platform-button"
+              href="https://github.com/filipeclacerda/lumen/releases/latest"
+              data-download="linux-appimage"
+            >
+              <span>
+                <small>Formato portátil</small>
+                <strong>Baixar para Linux</strong>
+              </span>
+              <span class="platform-button__format">AppImage</span>
+              <svg><use href="#i-download"></use></svg>
+            </a>
+            <p class="platform-alternative">
+              Usa Ubuntu, Debian ou derivados?
+              <a
+                href="https://github.com/filipeclacerda/lumen/releases/latest"
+                data-download="linux-deb"
+                >Baixar .deb</a
+              >
+            </p>
+          </article>
+        </div>
+
+        <div class="download-meta reveal">
+          <span
+            ><i></i>Versão
+            <strong data-release-version>mais recente</strong></span
+          >
+          <span>Downloads oficiais via GitHub Releases</span>
+          <a href="https://github.com/filipeclacerda/lumen/releases/latest"
+            >Ver notas e todos os arquivos
+            <svg><use href="#i-arrow-up-right"></use></svg
+          ></a>
         </div>
       </section>
 
@@ -807,8 +990,8 @@
             <div class="step-icon">
               <svg><use href="#i-download"></use></svg>
             </div>
-            <h3>Instale no Windows</h3>
-            <p>Baixe a versão mais recente na página oficial de releases.</p>
+            <h3>Instale no seu sistema</h3>
+            <p>Escolha a versão para Windows, macOS ou Linux.</p>
           </li>
           <li class="reveal reveal-delay-one">
             <span>02</span>
@@ -887,9 +1070,9 @@
             <details>
               <summary>Em quais sistemas o Lumen funciona?</summary>
               <p>
-                As versões publicadas atualmente são voltadas ao Windows.
-                Consulte a página de releases para requisitos e novidades da
-                versão mais recente.
+                Há versões para Windows 10 e 11, macOS em Apple Silicon ou
+                Intel, e distribuições Linux 64 bits. Consulte as notas da
+                versão mais recente para requisitos específicos.
               </p>
             </details>
           </div>
@@ -910,10 +1093,8 @@
             privacidade, autonomia e transparência.
           </p>
           <div class="hero-actions">
-            <a
-              class="button button-primary"
-              href="https://github.com/filipeclacerda/lumen/releases/latest"
-              ><svg><use href="#i-download"></use></svg>Baixar para Windows</a
+            <a class="button button-primary" href="#download"
+              ><svg><use href="#i-download"></use></svg>Escolher meu sistema</a
             >
             <a
               class="button button-ghost"

@@ -100,3 +100,136 @@ document.querySelectorAll(".faq-list details").forEach((details) => {
 document.querySelectorAll("[data-year]").forEach((element) => {
   element.textContent = String(new Date().getFullYear());
 });
+
+const releaseUrl = "https://github.com/filipeclacerda/lumen/releases/latest";
+const releaseApiUrl =
+  "https://api.github.com/repos/filipeclacerda/lumen/releases/latest";
+
+const assetMatchers = {
+  "windows-exe": /(?:windows-x64-setup|x64-setup)\.exe$/i,
+  "windows-msi": /(?:windows-x64|x64).*\.msi$/i,
+  "mac-arm64": /(?:macos-arm64|aarch64|arm64)\.dmg$/i,
+  "mac-x64": /(?:macos-x64|x86_64|x64)\.dmg$/i,
+  "linux-appimage": /(?:linux-x64|amd64|x86_64).*\.appimage$/i,
+  "linux-deb": /(?:linux-x64|amd64|x86_64).*\.deb$/i,
+};
+
+const smartDownloadProfiles = {
+  windows: {
+    asset: "windows-exe",
+    icon: "#i-windows",
+    label: "Baixar para Windows",
+  },
+  mac: {
+    asset: "mac-arm64",
+    icon: "#i-apple",
+    label: "Baixar para macOS",
+  },
+  linux: {
+    asset: "linux-appimage",
+    icon: "#i-linux",
+    label: "Baixar para Linux",
+  },
+};
+
+const userAgent = window.navigator.userAgent.toLowerCase();
+const currentPlatform = userAgent.includes("windows")
+  ? "windows"
+  : userAgent.includes("mac")
+    ? "mac"
+    : userAgent.includes("linux")
+      ? "linux"
+      : null;
+
+function configureSmartDownloads(profile) {
+  if (!profile) return;
+
+  document.querySelectorAll("[data-smart-download]").forEach((link) => {
+    link.setAttribute("data-download", profile.asset);
+    link.setAttribute("aria-label", profile.label);
+
+    const label = link.querySelector("[data-smart-download-label]");
+    const icon = link.querySelector("[data-smart-download-icon]");
+
+    if (label) label.textContent = profile.label;
+    icon?.setAttribute("href", profile.icon);
+  });
+}
+
+const initialSmartDownloadProfile = currentPlatform
+  ? smartDownloadProfiles[currentPlatform]
+  : null;
+
+configureSmartDownloads(initialSmartDownloadProfile);
+
+if (currentPlatform) {
+  const platformCard = document.querySelector(
+    `[data-platform-card="${currentPlatform}"]`,
+  );
+  const recommendation = platformCard?.querySelector(".platform-recommended");
+
+  platformCard?.classList.add("is-recommended");
+  if (recommendation instanceof HTMLElement) recommendation.hidden = false;
+}
+
+async function refineMacDownload() {
+  if (currentPlatform !== "mac") return;
+
+  const userAgentData = window.navigator.userAgentData;
+  if (typeof userAgentData?.getHighEntropyValues !== "function") return;
+
+  try {
+    const hints = await userAgentData.getHighEntropyValues(["architecture"]);
+    if (hints.architecture === "x86") {
+      configureSmartDownloads({
+        ...smartDownloadProfiles.mac,
+        asset: "mac-x64",
+      });
+    }
+  } catch {
+    // A arquitetura é uma melhoria progressiva; o fallback segue funcional.
+  }
+}
+
+async function resolveLatestDownloads() {
+  await refineMacDownload();
+
+  const response = await window.fetch(releaseApiUrl);
+  if (!response.ok) throw new Error("Não foi possível consultar a release.");
+
+  const release = await response.json();
+  const assets = Array.isArray(release.assets) ? release.assets : [];
+
+  document.querySelectorAll("[data-download]").forEach((link) => {
+    const key = link.getAttribute("data-download");
+    const matcher = key ? assetMatchers[key] : null;
+    const asset = matcher
+      ? assets.find((candidate) => matcher.test(candidate.name))
+      : null;
+
+    if (
+      !(link instanceof HTMLElement) ||
+      link.tagName !== "A" ||
+      !asset?.browser_download_url
+    ) {
+      return;
+    }
+
+    link.setAttribute("href", asset.browser_download_url);
+    link.title = `Baixar ${asset.name}`;
+  });
+
+  if (typeof release.tag_name === "string") {
+    document.querySelectorAll("[data-release-version]").forEach((element) => {
+      element.textContent = release.tag_name;
+    });
+  }
+}
+
+resolveLatestDownloads().catch(() => {
+  document.querySelectorAll("[data-download]").forEach((link) => {
+    if (link instanceof HTMLElement && link.tagName === "A") {
+      link.setAttribute("href", releaseUrl);
+    }
+  });
+});
