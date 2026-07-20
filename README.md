@@ -1,6 +1,6 @@
 # Lumen — landing page
 
-Landing page estática do [Lumen](https://github.com/filipeclacerda/lumen), um gestor financeiro pessoal local-first e open source.
+Landing page estática do [Lumen](https://github.com/filipeclacerda/lumen) — **Seu dinheiro, mais claro.** Um gestor financeiro pessoal privado, local-first e open source.
 
 ## Desenvolvimento
 
