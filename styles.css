@@ -2899,6 +2899,12 @@ svg {
   .container {
     width: min(calc(100% - 32px), var(--container));
   }
+  .site-header.scrolled,
+  body.menu-open .site-header {
+    background: #07100c;
+    border-color: var(--border);
+    backdrop-filter: none;
+  }
   .header-inner {
     height: 68px;
   }
@@ -2914,9 +2920,10 @@ svg {
     align-items: stretch;
     padding: 28px 20px;
     visibility: hidden;
-    background: rgba(7, 16, 12, 0.97);
+    z-index: 101;
+    background: #07100c;
     opacity: 0;
-    backdrop-filter: blur(22px);
+    backdrop-filter: none;
     transform: translateY(-12px);
     transition:
       opacity 220ms ease,
@@ -2965,16 +2972,71 @@ svg {
     gap: 7px;
   }
   .product-stage {
-    padding-bottom: 60px;
+    height: auto;
+    padding-bottom: 40px;
+    overflow: visible;
   }
   .app-window {
-    width: 820px;
-    transform: scale(0.76);
-    transform-origin: top left;
+    width: 100%;
+    transform: none;
   }
-  .product-stage {
-    height: 566px;
-    overflow: hidden;
+  .window-bar {
+    grid-template-columns: 1fr auto;
+  }
+  .window-command {
+    display: none;
+  }
+  .app-shell {
+    display: block;
+    min-height: 0;
+  }
+  .app-sidebar {
+    display: none;
+  }
+  .app-main {
+    padding: 14px 12px 12px;
+  }
+  .dashboard-toolbar {
+    justify-content: flex-start;
+  }
+  .dashboard-toolbar > button,
+  .period-control em {
+    display: none;
+  }
+  .dashboard-greeting > span {
+    display: none;
+  }
+  .metric-grid.real-metrics {
+    gap: 5px;
+    margin-top: 14px;
+  }
+  .real-metrics article {
+    min-height: 82px;
+    padding: 9px;
+  }
+  .real-metrics article div {
+    font-size: 6px;
+  }
+  .real-metrics strong {
+    font-size: 12px;
+  }
+  .metric-symbol {
+    width: 18px;
+    height: 18px;
+    font-size: 9px;
+  }
+  .cashflow-card {
+    min-height: 230px;
+    padding: 10px;
+  }
+  .cashflow-chart {
+    grid-template-columns: 1fr;
+  }
+  .cashflow-y-axis {
+    display: none;
+  }
+  .cashflow-legend {
+    grid-column: 1;
   }
   .floating-card {
     display: none;
@@ -3090,11 +3152,11 @@ svg {
     margin-top: 20px;
   }
   .product-stage {
-    height: 450px;
+    height: auto;
     margin-top: 55px;
   }
   .app-window {
-    transform: scale(0.59);
+    transform: none;
   }
   .clarity-copy h2,
   .privacy-heading h2,
