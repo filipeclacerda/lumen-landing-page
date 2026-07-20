@@ -59,7 +59,23 @@ if ("IntersectionObserver" in window && !reducedMotion) {
     { threshold: 0.1, rootMargin: "0px 0px -5%" },
   );
 
-  revealElements.forEach((element) => revealObserver.observe(element));
+  const previewRevealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("visible");
+        previewRevealObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0 },
+  );
+
+  revealElements.forEach((element) => {
+    const observer = element.matches(".product-stage")
+      ? previewRevealObserver
+      : revealObserver;
+    observer.observe(element);
+  });
 } else {
   revealElements.forEach((element) => element.classList.add("visible"));
 }
