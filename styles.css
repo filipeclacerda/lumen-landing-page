@@ -454,20 +454,28 @@ svg {
   background: linear-gradient(
     90deg,
     #41654d 0%,
-    #c8f5d5 33%,
-    #74d696 52%,
-    #d5c697 76%,
+    #c8f5d5 16.5%,
+    #74d696 26%,
+    #d5c697 38%,
+    #41654d 50%,
+    #c8f5d5 66.5%,
+    #74d696 76%,
+    #d5c697 88%,
     #41654d 100%
   );
-  background-size: 220% auto;
+  background-size: 200% auto;
   background-clip: text;
   -webkit-background-clip: text;
   animation: shine 8s linear infinite;
 }
 
 @keyframes shine {
+  from {
+    background-position: 0 center;
+  }
+
   to {
-    background-position: 220% center;
+    background-position: 100% center;
   }
 }
 
@@ -496,7 +504,48 @@ svg {
 }
 
 .hero-download {
+  position: relative;
+  isolation: isolate;
   min-width: 238px;
+  overflow: hidden;
+}
+
+.hero-download::after {
+  position: absolute;
+  z-index: 0;
+  top: -65%;
+  left: -42%;
+  width: 24%;
+  height: 230%;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.16) 28%,
+    rgba(255, 255, 255, 0.72) 50%,
+    rgba(255, 255, 255, 0.16) 72%,
+    transparent
+  );
+  transform: rotate(18deg);
+  animation: download-button-reflection 5.5s var(--ease) infinite;
+}
+
+.hero-download > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes download-button-reflection {
+  0%,
+  68% {
+    left: -42%;
+  }
+
+  86%,
+  100% {
+    left: 118%;
+  }
 }
 
 .hero-download__system {
@@ -612,7 +661,7 @@ svg {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: 44px;
+  height: 33px;
   padding: 0 16px;
   color: #a8b2ab;
   background: #0c1711;
@@ -672,7 +721,7 @@ svg {
 .window-command {
   gap: 6px;
   min-width: 190px;
-  padding: 5px 11px;
+  padding: 3px 11px;
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 5px;
@@ -684,7 +733,7 @@ svg {
 }
 
 .window-command kbd {
-  padding: 2px 4px;
+  padding: 1px 5px;
   font: inherit;
   background: rgba(255, 255, 255, 0.08);
   border-radius: 3px;
