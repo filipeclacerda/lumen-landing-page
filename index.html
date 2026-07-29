@@ -270,6 +270,40 @@
               Ver código-fonte
             </a>
           </div>
+          <details
+            class="hero-winget-line reveal reveal-delay-three"
+            data-winget
+            hidden
+          >
+            <summary>
+              <span class="hero-winget-line__message"
+                >Instale com apenas uma linha de comando.</span
+              >
+              <span class="hero-winget-line__action"
+                >Ver comando do WinGet</span
+              >
+            </summary>
+            <div class="winget-command hero-winget-line__command">
+              <code data-winget-command
+                >winget install --id Lacerda.Lumen -e</code
+              >
+              <button
+                class="winget-copy"
+                type="button"
+                aria-label="Copiar comando de instalação do Lumen pelo WinGet"
+                data-copy-winget
+              >
+                <span data-winget-copy-label>Copiar</span>
+              </button>
+            </div>
+            <span
+              class="visually-hidden"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              data-winget-copy-status
+            ></span>
+          </details>
           <ul
             class="hero-trust reveal reveal-delay-three"
             aria-label="Destaques"
@@ -861,6 +895,29 @@
             <div class="platform-card__copy">
               <h3>Windows</h3>
               <p>Windows 10 e 11 <span aria-hidden="true">·</span> x64</p>
+            </div>
+            <div class="winget-option" data-winget hidden>
+              <span class="winget-option__label">Ou instale pelo WinGet</span>
+              <div class="winget-command">
+                <code data-winget-command
+                  >winget install --id Lacerda.Lumen -e</code
+                >
+                <button
+                  class="winget-copy"
+                  type="button"
+                  aria-label="Copiar comando de instalação pelo WinGet"
+                  data-copy-winget
+                >
+                  <span data-winget-copy-label>Copiar</span>
+                </button>
+              </div>
+              <span
+                class="visually-hidden"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                data-winget-copy-status
+              ></span>
             </div>
             <a
               class="platform-button"
