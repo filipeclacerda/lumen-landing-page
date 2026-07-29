@@ -119,6 +119,18 @@ svg {
   outline-offset: 3px;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip-path: inset(50%);
+}
+
 .ambient {
   position: absolute;
   inset: 0 0 auto;
@@ -487,9 +499,62 @@ svg {
   line-height: 1.7;
 }
 
+[data-winget][hidden] {
+  display: none;
+}
+
+.hero-winget-line {
+  width: min(100%, 560px);
+  margin-top: 8px;
+  color: var(--muted);
+}
+
+.hero-winget-line summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  cursor: pointer;
+  font-size: 12px;
+  list-style: none;
+}
+
+.hero-winget-line summary::-webkit-details-marker {
+  display: none;
+}
+
+.hero-winget-line__message {
+  color: #c1ccc4;
+  font-weight: 600;
+}
+
+.hero-winget-line__action {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin-left: 8px;
+  color: var(--brand);
+  font-weight: 700;
+}
+
+.hero-winget-line__action::after {
+  content: "+";
+  font-size: 14px;
+  line-height: 1;
+}
+
+.hero-winget-line[open] .hero-winget-line__action::after {
+  content: "−";
+}
+
+.hero-winget-line__command {
+  margin-top: 2px;
+  overflow: hidden;
+}
+
 .hero-actions {
   justify-content: center;
-  margin-top: 34px;
+  margin-top: 28px;
 }
 
 .hero .hero-actions {
@@ -2780,6 +2845,71 @@ svg {
   font-size: 12px;
 }
 
+.winget-option {
+  margin: 24px 0 14px;
+}
+
+.winget-option__label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.winget-command {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  overflow: hidden;
+  background: rgba(4, 10, 7, 0.64);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.winget-command code {
+  display: flex;
+  min-width: 0;
+  min-height: 48px;
+  align-items: center;
+  padding: 9px 12px;
+  color: #d9eee0;
+  font:
+    600 10px/1.45 ui-monospace,
+    SFMono-Regular,
+    Consolas,
+    "Liberation Mono",
+    monospace;
+  overflow-wrap: anywhere;
+}
+
+.winget-copy {
+  min-width: 68px;
+  min-height: 48px;
+  padding-inline: 13px;
+  color: var(--brand);
+  cursor: pointer;
+  background: var(--brand-soft);
+  border: 0;
+  border-left: 1px solid var(--border-strong);
+  font-size: 11px;
+  font-weight: 800;
+  transition:
+    color 180ms ease,
+    background 180ms ease;
+}
+
+.winget-copy:hover {
+  color: var(--text);
+  background: rgba(103, 205, 139, 0.2);
+}
+
+.winget-copy.is-copied {
+  color: #07100c;
+  background: var(--brand);
+}
+
 .platform-button {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
@@ -2950,11 +3080,10 @@ svg {
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
+  gap: 0;
   padding: 0;
   margin: 60px 0 0;
   overflow: hidden;
-  background: var(--border);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   list-style: none;
@@ -2965,6 +3094,10 @@ svg {
   min-height: 300px;
   padding: 28px;
   background: var(--bg);
+}
+
+.steps-grid li + li {
+  border-left: 1px solid var(--border);
 }
 
 .steps-grid li > span {
@@ -3038,7 +3171,7 @@ svg {
 }
 .faq-list summary::after {
   position: absolute;
-  top: 21px;
+  top: 50%;
   right: 6px;
   display: grid;
   width: 26px;
@@ -3052,10 +3185,11 @@ svg {
   transition:
     transform 220ms ease,
     background 220ms ease;
+  transform: translateY(-50%);
 }
 .faq-list details[open] summary::after {
   background: var(--brand-soft);
-  transform: rotate(45deg);
+  transform: translateY(-50%) rotate(45deg);
 }
 .faq-list p {
   max-width: 650px;
@@ -3544,6 +3678,10 @@ svg {
   .steps-grid li {
     min-height: 250px;
   }
+  .steps-grid li + li {
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
   .step-icon {
     margin-top: 32px;
   }
@@ -3572,6 +3710,22 @@ svg {
   }
   .hero-actions .button {
     width: 100%;
+  }
+  .hero-winget-line {
+    width: 100%;
+  }
+  .hero-winget-line summary {
+    flex-wrap: wrap;
+    padding-block: 5px;
+    line-height: 1.4;
+  }
+  .hero-winget-line__command {
+    grid-template-columns: 1fr;
+  }
+  .hero-winget-line__command .winget-copy {
+    min-height: 44px;
+    border-top: 1px solid var(--border-strong);
+    border-left: 0;
   }
   .hero-download-stack {
     width: 100%;

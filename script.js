@@ -148,14 +148,32 @@ const smartDownloadProfiles = {
   },
 };
 
-const userAgent = window.navigator.userAgent.toLowerCase();
-const currentPlatform = userAgent.includes("windows")
-  ? "windows"
-  : userAgent.includes("mac")
-    ? "mac"
-    : userAgent.includes("linux")
-      ? "linux"
-      : null;
+function detectCurrentPlatform() {
+  const navigatorPlatform =
+    window.navigator.userAgentData?.platform ?? window.navigator.platform ?? "";
+  const platform = String(navigatorPlatform).toLowerCase();
+  const userAgent = window.navigator.userAgent.toLowerCase();
+
+  if (
+    platform === "windows" ||
+    platform.startsWith("win") ||
+    userAgent.includes("windows nt")
+  ) {
+    return "windows";
+  }
+
+  if (platform.startsWith("mac") || userAgent.includes("macintosh")) {
+    return "mac";
+  }
+
+  if (platform.startsWith("linux") || userAgent.includes("linux")) {
+    return "linux";
+  }
+
+  return null;
+}
+
+const currentPlatform = detectCurrentPlatform();
 
 function configureSmartDownloads(profile) {
   if (!profile) return;
@@ -187,6 +205,152 @@ if (currentPlatform) {
   platformCard?.classList.add("is-recommended");
   if (recommendation instanceof HTMLElement) recommendation.hidden = false;
 }
+
+const wingetOptions = document.querySelectorAll("[data-winget]");
+
+if (currentPlatform === "windows") {
+  wingetOptions.forEach((option) => {
+    if (option instanceof HTMLElement) option.hidden = false;
+  });
+}
+
+function setupWingetDisclosure(details) {
+  const summary = details.querySelector("summary");
+  const command = details.querySelector(".hero-winget-line__command");
+
+  if (!(summary instanceof HTMLElement) || !(command instanceof HTMLElement)) {
+    return;
+  }
+
+  let disclosureAnimation;
+  let commandAnimation;
+  let targetOpen = details.open;
+
+  summary.addEventListener("click", (event) => {
+    event.preventDefault();
+    targetOpen = !targetOpen;
+
+    disclosureAnimation?.cancel();
+    commandAnimation?.cancel();
+
+    if (reducedMotion) {
+      details.open = targetOpen;
+      return;
+    }
+
+    const startHeight = details.getBoundingClientRect().height;
+
+    if (targetOpen) details.open = true;
+
+    const endHeight = targetOpen
+      ? details.scrollHeight
+      : summary.getBoundingClientRect().height;
+
+    details.style.height = `${startHeight}px`;
+    details.style.overflow = "hidden";
+
+    const currentDisclosureAnimation = details.animate(
+      { height: [`${startHeight}px`, `${endHeight}px`] },
+      {
+        duration: 320,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        fill: "forwards",
+      },
+    );
+
+    disclosureAnimation = currentDisclosureAnimation;
+    commandAnimation = command.animate(
+      {
+        opacity: targetOpen ? [0, 1] : [1, 0],
+        transform: targetOpen
+          ? ["translateY(-8px)", "translateY(0)"]
+          : ["translateY(0)", "translateY(-6px)"],
+      },
+      {
+        duration: targetOpen ? 240 : 180,
+        easing: "ease-out",
+        fill: "forwards",
+      },
+    );
+
+    currentDisclosureAnimation.addEventListener("finish", () => {
+      if (disclosureAnimation !== currentDisclosureAnimation) return;
+
+      details.open = targetOpen;
+      details.style.height = "";
+      details.style.overflow = "";
+      commandAnimation?.cancel();
+      disclosureAnimation = undefined;
+      commandAnimation = undefined;
+    });
+  });
+}
+
+document
+  .querySelectorAll("details.hero-winget-line")
+  .forEach((details) => setupWingetDisclosure(details));
+
+function copyWithFallback(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+
+  const copied = document.execCommand("copy");
+  textarea.remove();
+
+  if (!copied) throw new Error("Não foi possível copiar o comando.");
+}
+
+async function writeToClipboard(text) {
+  if (typeof window.navigator.clipboard?.writeText === "function") {
+    try {
+      await window.navigator.clipboard.writeText(text);
+      return;
+    } catch {
+      // O fallback mantém a cópia disponível fora de contextos HTTPS.
+    }
+  }
+
+  copyWithFallback(text);
+}
+
+async function copyWingetCommand(button) {
+  const wingetOption = button.closest("[data-winget]");
+  const command = wingetOption?.querySelector("[data-winget-command]");
+  const label = button.querySelector("[data-winget-copy-label]");
+  const status = wingetOption?.querySelector("[data-winget-copy-status]");
+  const text = command?.textContent?.trim();
+  const defaultLabel =
+    button.getAttribute("data-copy-default-label") ?? "Copiar";
+
+  if (!text) return;
+
+  try {
+    await writeToClipboard(text);
+
+    button.classList.add("is-copied");
+    if (label) label.textContent = "Copiado";
+    if (status) status.textContent = "Comando WinGet copiado.";
+  } catch {
+    button.classList.remove("is-copied");
+    if (label) label.textContent = "Tente novamente";
+    if (status)
+      status.textContent = "Não foi possível copiar o comando WinGet.";
+  }
+
+  window.setTimeout(() => {
+    button.classList.remove("is-copied");
+    if (label) label.textContent = defaultLabel;
+  }, 2500);
+}
+
+document.querySelectorAll("[data-copy-winget]").forEach((button) => {
+  button.addEventListener("click", () => copyWingetCommand(button));
+});
 
 async function refineMacDownload() {
   if (currentPlatform !== "mac") return;
